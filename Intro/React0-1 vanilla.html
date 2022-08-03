@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React desde Cero</title>
+    <style>
+        picture {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            width: 100px;
+        }
+        img {
+            box-shadow: 0 0 13px #999;
+            border-radius: 50%;
+            width: 100px;
+        }
+
+        img.fade {
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Women in Tech</h1>
+
+    <div id="app">
+        
+    </div>
+
+    <script>
+        const $app = document.getElementById('app');
+        const Avatar = params => {
+            const src = `https://randomuser.me/api/portraits/women/4${params.id}.jpg`;
+            return `<picture>
+                <img src="${src}" />
+                <em>${params.name}</em>
+            </picture>
+            `;
+        }
+
+        $app.innerHTML += Avatar({ id: 0, name: "Linda" });
+        $app.innerHTML += Avatar({ id: 9, name: "Andrea" });
+
+        $app.querySelectorAll('img').forEach(element => {
+            element.addEventListener('click', () => {
+                element.classList.toggle("fade");
+            });
+        });
+    </script>
+</body>
+</html>

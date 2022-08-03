@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React desde Cero</title>
+    <style>
+        picture {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            width: 100px;
+        }
+        img {
+            box-shadow: 0 0 13px #999;
+            border-radius: 50%;
+            width: 100px;
+        }
+
+        img.fade {
+            opacity: 0.3;
+        }
+    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Added JSX/Babel script -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <h1>Women in Tech</h1>
+
+    <div id="app">
+        
+    </div>
+
+    <script type="text/babel">
+        const $app = document.getElementById('app');
+        const h = React.createElement;
+
+        // React component as function
+        const Avatar = params => {
+            const src = `https://randomuser.me/api/portraits/women/4${params.id}.jpg`;
+
+            console.log(params.id);
+            console.log(params.name);
+            // JSX
+            return (
+                <picture>
+                    <img onClick={(event) => {
+                        event.target.classList.toggle('fade');
+                    }} src={src} />
+                    <em>{params.name}</em>
+                </picture>
+            );
+        };
+        
+        // JSX
+        ReactDOM.render(
+            <div>
+                <Avatar id={0} name='Analala' />
+                <Avatar id={1} name='Pilquipollo' />
+            </div>,
+            $app
+        );        
+        
+        /*
+        const Avatar = params => {
+            const src = `https://randomuser.me/api/portraits/women/4${params.id}.jpg`;
+            return `<picture>
+                <img src="${src}" />
+                <em>${params.name}</em>
+            </picture>
+            `;
+        }
+
+        $app.innerHTML += Avatar({ id: 0, name: "Linda" });
+        $app.innerHTML += Avatar({ id: 9, name: "Andrea" });
+
+        $app.querySelectorAll('img').forEach(element => {
+            element.addEventListener('click', () => {
+                element.classList.toggle("fade");
+            });
+        });
+        */
+    </script>
+</body>
+</html>

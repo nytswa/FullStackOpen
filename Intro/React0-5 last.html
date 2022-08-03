@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React desde Cero</title>
+    <style>
+        picture {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            width: 100px;
+        }
+        img {
+            box-shadow: 0 0 13px #999;
+            border-radius: 50%;
+            width: 100%;
+        }
+
+        img.fade {
+            opacity: 0.3;
+        }
+
+        picture.small {
+            width: 50px;
+        }
+
+        picture.normal {
+            width: 100px;
+        }
+
+        picture.large {
+            width: 200px;
+        }
+    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Added JSX/Babel script -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <h1>Por ahí... eh visto gente</h1>
+
+    <div id="app">
+        
+    </div>
+
+    <script type="text/babel">
+        const $app = document.getElementById('app');
+        const useState = React.useState;  // === const {useState} = React
+
+        // React component as function
+        const Avatar = ({ id, name = "default", size = 'normal' }) => {
+            // crear estado pasando valor/estado inicial -> devuelve un array de 2 elementos
+            const state = useState(true);
+            const enabled = state[0];  //si está activo o no
+            const setEnable = state[1];  // interruptor
+
+            // las 3 lineas anteriores se pueden simplificar con una DECOSNTRUCCIÓN
+            // const [enabled, setEnable] = useState(true)
+
+            let src;
+            if (!id) { src = "https://randomuser.me/api/portraits/lego/1.jpg"; }
+            else { src = `https://randomuser.me/api/portraits/women/4${id}.jpg`; }
+            
+            const imgClassName = enabled ? '' : 'fade';
+
+            // JSX
+            return (
+                <picture className={size}>
+                    <img onClick={ () => setEnable(!enabled) } className={imgClassName} src={src} />
+                    <em>{enabled ? name : "Desactivado"}</em>
+                </picture>
+            );
+        };
+        
+        // JSX
+        ReactDOM.render(
+            <div>
+                <Avatar id={0} name='Analala' size='small' />
+                <Avatar id={1} name='Pilquipollo'/>
+                <Avatar size='large' />
+            </div>,
+            $app
+        );        
+        
+
+    </script>
+</body>
+</html>
