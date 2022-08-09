@@ -1,0 +1,4 @@
+the idea is:
+    -GET the time (hh:mm:ss) using an API (or computer).
+    -Format it.
+    -Calculation: run a simple funcition that adds +1 every 1000ms.
