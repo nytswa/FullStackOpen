@@ -1,4 +1,5 @@
 // ejercicios 1.3-1.5
+// import {useState} from 'react'
 
 const App = () => {
   const course = {
@@ -17,6 +18,11 @@ const App = () => {
         exercises: 14
       }
   ]}
+
+  // const [contadorValor, contadorUpdate]= useState(10);
+  // const handleClick = (p) => {
+  //   contadorUpdate(contadorValor + p);
+  // };
   
 
   const Header = ({course}) => {
@@ -40,6 +46,10 @@ const App = () => {
       <Header course={course} />
       <Content parts={course} />
       <Total parts={course} />
+
+      {/* <h1>{contadorValor}</h1>
+      <button onClick={() => handleClick(1)}>+1</button>
+      <button onClick={() => handleClick(-1)}>-1</button> */}
     </div>
   )
 }
