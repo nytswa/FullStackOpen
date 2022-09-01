@@ -1,5 +1,47 @@
 import { useState } from 'react'
 
+const GeneralInput = ({handler, value, name}) => {
+  return (
+    <div>
+      {name}: <input type='text' onChange={handler} value={value} />
+    </div>
+  )
+}
+
+const SearchBar = ({handler, value, name}) => {
+  return (
+    <GeneralInput handler={handler} value={value} name={name} ></GeneralInput>
+  )
+}
+
+const NewContact = ({handleName, handleSubmit, handlePhone, nameValue, phoneValue}) => {
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Add a New Contact</h2>
+      <GeneralInput handler={handleName} value={nameValue} name='name' ></GeneralInput>
+      <GeneralInput handler={handlePhone} value={phoneValue} name='number' ></GeneralInput>
+      <div>
+        <button type='submit'>add</button>
+      </div>
+    </form>
+  )
+}
+
+const Person = ({p}) => <p>{p.name} {p.number}</p>
+
+const Contacts = ({persons, filter}) => {
+  return <div>
+    <h2>Numbers</h2>
+    {persons
+        .filter((p)  => {
+          return (filter === '') ? true : p.name.toLowerCase().startsWith(filter.toLowerCase())
+        })
+        .map((p) => {
+          return <Person key={p.name} p={p}></Person>
+      })}
+  </div>
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -11,17 +53,8 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
   const [filterBy, setFilterBy] = useState('')
 
-
-  const handleName = (e) => {
-    setNewName(e.target.value)
-  }
-
-  const handlePhone = (e) => {
-    setNewPhone(e.target.value)
-  }
-
-  const handleFilter = (e) => {
-    setFilterBy(e.target.value)
+  const handler = (event, change) => {
+    return change(event.target.value)
   }
 
   const handleSubmit = (event) => {
@@ -42,32 +75,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          search: <input type='text' onChange={handleFilter} value={filterBy} />
-        </div>
-      </form>
-      <form onSubmit={handleSubmit}>
-        <h2>Add a New Contact</h2>
-        <div>
-          name: <input type='text' onChange={handleName} value={newName} />
-        </div>
-        <div>
-          number: <input type='text' onChange={handlePhone} value={newPhone} />
-        </div>
-        <div>
-          <button type='submit'>add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {/* <div>debug: {newName} </div> */}
-      {persons
-        .filter((p)  => {
-          return (filterBy === '') ? true : p.name.toLowerCase().startsWith(filterBy.toLowerCase())
-        })
-        .map((p) => {
-          return <p key={p.name}>{p.name} {p.number}</p>
-      })}
+      <SearchBar handler={ (e) => handler(e, setFilterBy) } value={filterBy} name='search'></SearchBar>
+
+      <NewContact 
+        handleName={(e) => handler(e, setNewName)} 
+        handlePhone={(e) => handler(e, setNewPhone)} 
+        handleSubmit={handleSubmit} 
+        nameValue={newName} 
+        phoneValue={newPhone}
+        ></NewContact>
+      
+      <Contacts persons={persons} filter={filterBy}></Contacts>
     </div>
   )
 }
