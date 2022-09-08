@@ -50,7 +50,6 @@ const App = () => {
   useEffect( () => getContacts(setPersons), [])
     
 
-
   const handler = (event, change) => {
     return change(event.target.value)
   }
