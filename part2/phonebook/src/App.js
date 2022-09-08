@@ -1,16 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getContacts } from './getContacts'
+import { addContact } from './addContact'
 
 const GeneralInput = ({handler, value, name}) => {
   return (
     <div>
       {name}: <input type='text' onChange={handler} value={value} />
     </div>
-  )
-}
-
-const SearchBar = ({handler, value, name}) => {
-  return (
-    <GeneralInput handler={handler} value={value} name={name} ></GeneralInput>
   )
 }
 
@@ -42,16 +38,18 @@ const Contacts = ({persons, filter}) => {
   </div>
 }
 
+
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterBy, setFilterBy] = useState('')
+
+  // const [persons, setPersons] = useState(getContacts());
+  // useEffect( () => getContact(setPersons), [])
+  useEffect( () => getContacts(setPersons), [])
+    
+
 
   const handler = (event, change) => {
     return change(event.target.value)
@@ -64,8 +62,12 @@ const App = () => {
       number: newPhone
     }
     if (persons.findIndex(element => element.name === person.name) === -1) {
+      // lo añade a la base de datos json-server
+      addContact(person)
+      // Simula estar en Sync: lo añade al estado local
       setPersons(persons.concat(person))
       setNewName('')
+      setNewPhone('')
     }
     else {
       alert(`${person.name} is already added to phonebook.`)
@@ -75,7 +77,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <SearchBar handler={ (e) => handler(e, setFilterBy) } value={filterBy} name='search'></SearchBar>
+      <GeneralInput handler={ (e) => handler(e, setFilterBy) } value={filterBy} name='search'></GeneralInput>
 
       <NewContact 
         handleName={(e) => handler(e, setNewName)} 
@@ -83,7 +85,7 @@ const App = () => {
         handleSubmit={handleSubmit} 
         nameValue={newName} 
         phoneValue={newPhone}
-        ></NewContact>
+      ></NewContact>
       
       <Contacts persons={persons} filter={filterBy}></Contacts>
     </div>
