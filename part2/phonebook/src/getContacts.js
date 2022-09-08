@@ -6,4 +6,7 @@ export const getContacts = (state) => {
         .then( response => {
             state(response.data)
         })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
