@@ -48,7 +48,6 @@ const App = () => {
   // const [persons, setPersons] = useState(getContacts());
   // useEffect( () => getContact(setPersons), [])
   useEffect( () => getContacts(setPersons), [])
-    
 
   const handler = (event, change) => {
     return change(event.target.value)
