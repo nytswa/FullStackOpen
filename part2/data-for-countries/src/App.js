@@ -8,7 +8,19 @@ const Country = ({object}) => {
     <h2>{object.name.common}</h2>
     <p>Official Name: <strong>{object.name.official}</strong> </p>
     <p>Capital: {object.capital}</p>
-    <p>Flag:</p>
+    <p>Area: {object.area}</p>
+    
+    <h4>Languages</h4>
+    <ul>
+      {/* {Object.entries(object.languages).map( l =>  <li key={l}>{l[1]}</li> )} */}
+      {Object.values(object.languages).map( l =>  <li key={l}>{l}</li> )}
+    </ul>
+    
+
+    <div>
+      <img src={object.flags.png} alt={object.name.official} width="75" height="50" /><br></br>
+      <label>{`${object.name.official} flag`}</label>
+    </div>
   </div>
 }
 
