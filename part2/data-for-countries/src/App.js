@@ -24,6 +24,11 @@ const Country = ({object}) => {
   </div>
 }
 
+const SimpleCountry = ({name}) => {
+  console.log('simpleCountry')
+  return <p>{name}</p>
+}
+
 const Search = ({label, handler, value, placeholder}) => {
   return (
     <div>
@@ -33,9 +38,43 @@ const Search = ({label, handler, value, placeholder}) => {
   )
 }
 
+const Main = ({filterBy, countries}) => {
+  let filterCountries = []
+
+  if (filterBy.length === 0) {
+    return 'Try writing something'
+
+  // An additional elseif to SAVE some filtering work
+  // } else if (filterBy.length < 3) {
+  //   return "I won't start seaching just to save us some memory"
+
+  } else {
+    filterCountries = countries
+      .filter( (c) => {
+        return c.name.common.toLowerCase().includes(filterBy.toLowerCase())
+      })
+  }
+
+  console.log(filterCountries)
+
+  if (filterCountries.length === 0) {
+    return 'Nothing Found'
+  } else if (filterCountries.length > 10) {
+    return 'Too many matches specify another filter'
+  } else if (filterCountries.length === 1) {
+    return <Country object={ filterCountries[0] }></Country>
+  } else {
+    return <div>
+      {filterCountries
+        .map( (c) => {
+          return <SimpleCountry key={c.name.common} name={c.name.common}></SimpleCountry>
+        })}
+    </div>
+  }
+}
+
 function App() {
   const [ countries, setCountries ] = useState([]);
-  const [ countriesOnDisplay, setCountriesOnDisplay ] = useState([]);
   const [ filterBy, setFilterBy ] = useState('');
 
   useEffect( () => {
@@ -46,7 +85,7 @@ function App() {
       })
       .then(response => {
         setCountries(response.data);
-        console.log('Data Received (example) :', response.data[0]);
+        // console.log('Data Received (example) :', response.data[0]);
       })
   }, []);
 
@@ -61,18 +100,17 @@ function App() {
 
   return (
     <div className="App">
-        <Search label='find countries:' value={filterBy} placeholder='search' handler={handleSearch} autofocus></Search>
+        <Search 
+          label='find countries:' 
+          value={filterBy} 
+          placeholder='search' 
+          handler={handleSearch} 
+        ></Search>
 
-        {(filterBy.length < 4) ? 'Too many matches specify another filter' : 
-          countries
-            .filter( c => {
-              return (filterBy.length < 4) ? false : c.name.common.toLowerCase().includes(filterBy.toLowerCase())
-            })
-            .map( c => {
-              return <Country key={c.name.official} object={ c }></Country>
-            })
-        }
-
+        <Main 
+          filterBy={filterBy} 
+          countries={countries}
+        ></Main>
     </div>
   )
 }
