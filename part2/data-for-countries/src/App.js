@@ -12,7 +12,7 @@ const Country = ({object}) => {
     
     <h4>Languages</h4>
     <ul>
-      {/* {Object.entries(object.languages).map( l =>  <li key={l}>{l[1]}</li> )} */}
+      {/* Alternative -> {Object.entries(object.languages).map( l =>  <li key={l}>{l[1]}</li> )} */}
       {Object.values(object.languages).map( l =>  <li key={l}>{l}</li> )}
     </ul>
     
@@ -55,7 +55,6 @@ const Main = ({filterBy, countries}) => {
       })
   }
 
-
   if (filterCountries.length === 0) {
     return 'Nothing Found'
   } else if (filterCountries.length > 10) {
@@ -84,7 +83,6 @@ function App() {
       })
       .then(response => {
         setCountries(response.data);
-        // console.log('Data Received (example) :', response.data[0]);
       })
   }, []);
 
