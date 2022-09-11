@@ -24,9 +24,11 @@ const Country = ({object}) => {
   </div>
 }
 
-const SimpleCountry = ({name}) => {
-  console.log('simpleCountry')
-  return <p>{name}</p>
+const SimpleCountry = ({country, handler}) => {
+  return <p>
+    {country.name.common} 
+    <button onClick={ () => handler(country) }>show</button>
+  </p>
 }
 
 const Search = ({label, handler, value, placeholder}) => {
@@ -38,8 +40,8 @@ const Search = ({label, handler, value, placeholder}) => {
   )
 }
 
-const Main = ({filterBy, countries}) => {
-  let filterCountries = []
+const Main = ({filterBy, countries, handler, showButton}) => {
+  let filterCountries = [showButton[0]]
 
   if (filterBy.length === 0) {
     return 'Try writing something'
@@ -48,7 +50,7 @@ const Main = ({filterBy, countries}) => {
   // } else if (filterBy.length < 3) {
   //   return "I won't start seaching just to save us some memory"
 
-  } else {
+  } else if (!showButton[1]) {
     filterCountries = countries
       .filter( (c) => {
         return c.name.common.toLowerCase().includes(filterBy.toLowerCase())
@@ -65,7 +67,7 @@ const Main = ({filterBy, countries}) => {
     return <div>
       {filterCountries
         .map( (c) => {
-          return <SimpleCountry key={c.name.common} name={c.name.common}></SimpleCountry>
+          return <SimpleCountry key={c.name.common} handler={(e) => handler(e, c)} country={c}></SimpleCountry>
         })}
     </div>
   }
@@ -74,6 +76,8 @@ const Main = ({filterBy, countries}) => {
 function App() {
   const [ countries, setCountries ] = useState([]);
   const [ filterBy, setFilterBy ] = useState('');
+  const [ showButton, setShowButton ] = useState([{}, false]);
+  
 
   useEffect( () => {
     axios
@@ -88,8 +92,12 @@ function App() {
 
   const handleSearch = (event) => {
     setFilterBy(event.target.value)
+    setShowButton([{}, false])
   }
 
+  const handleShow = (event, country) => {
+    setShowButton([country, true])
+  }
 
   if (countries.length === 0) {
     return 'fetching data...'
@@ -107,6 +115,8 @@ function App() {
         <Main 
           filterBy={filterBy} 
           countries={countries}
+          handler={handleShow}
+          showButton={showButton}
         ></Main>
     </div>
   )
