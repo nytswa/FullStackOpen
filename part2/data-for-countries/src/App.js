@@ -55,7 +55,6 @@ const Main = ({filterBy, countries}) => {
       })
   }
 
-  console.log(filterCountries)
 
   if (filterCountries.length === 0) {
     return 'Nothing Found'
