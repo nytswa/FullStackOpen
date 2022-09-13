@@ -4,6 +4,21 @@ import axios from 'axios'
 
 
 const Country = ({object}) => {
+  const [ weather, setWeather ] = useState([]);
+  const api_key = process.env.REACT_APP_API_KEY
+
+  useEffect( () => {
+    // weatherAPI(setWeather, object.latlng[0], object.latlng[1])
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?lat=${object.latlng[0]}&lon=${object.latlng[1]}&appid=${api_key}`)
+      .then(response => {
+        setWeather(response.data);
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }, []);
+
   return <div>
     <h2>{object.name.common}</h2>
     <p>Official Name: <strong>{object.name.official}</strong> </p>
@@ -19,8 +34,16 @@ const Country = ({object}) => {
 
     <div>
       <img src={object.flags.png} alt={object.name.official} width="75" height="50" /><br></br>
-      <label>{`${object.name.official} flag`}</label>
     </div>
+
+    <h3>Weather in {object.name.common}</h3>
+    {(weather === [] || weather === undefined) ? 'gathering weather data' :
+      <div>
+        <p>temperature: {weather.main.temp}</p>
+        <i>icon</i>
+        <p>wind: {weather.wind.speed}</p>
+      </div>
+    }
   </div>
 }
 
