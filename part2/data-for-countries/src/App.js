@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 
-const Country = ({object}) => {
+const Weather = ({country}) => {
   const [ weather, setWeather ] = useState([]);
   const api_key = process.env.REACT_APP_API_KEY
 
   useEffect( () => {
     // weatherAPI(setWeather, object.latlng[0], object.latlng[1])
     axios
-      .get(`https://api.openweathermap.org/data/2.5/weather?lat=${object.latlng[0]}&lon=${object.latlng[1]}&appid=${api_key}`)
+      .get(`https://api.openweathermap.org/data/2.5/weather?lat=${country.latlng[0]}&lon=${country.latlng[1]}&appid=${api_key}`)
       .then(response => {
         setWeather(response.data);
       })
@@ -19,6 +19,24 @@ const Country = ({object}) => {
       })
   }, []);
 
+  if (typeof weather === "undefined") {
+    console.log('Gotcha!', weather);
+    return 'Not Ready... saving you from error... thou this is not working as expected.'
+  }
+
+  if (weather.length === 0) {
+    return 'Gathering weather data...'
+  }
+
+  return <div>
+      <h3>Weather in {country.name.common}</h3>
+      <p>temperature: {weather.main.temp - 273.15}º Celcius</p>
+      <i>icon</i>
+      <p>wind: {weather.wind.speed} m/s</p>
+  </div>
+}
+
+const Country = ({object}) => {
   return <div>
     <h2>{object.name.common}</h2>
     <p>Official Name: <strong>{object.name.official}</strong> </p>
@@ -36,14 +54,7 @@ const Country = ({object}) => {
       <img src={object.flags.png} alt={object.name.official} width="75" height="50" /><br></br>
     </div>
 
-    <h3>Weather in {object.name.common}</h3>
-    {(weather === [] || weather === undefined) ? 'gathering weather data' :
-      <div>
-        <p>temperature: {weather.main.temp}</p>
-        <i>icon</i>
-        <p>wind: {weather.wind.speed}</p>
-      </div>
-    }
+    <Weather country={object} ></Weather>
   </div>
 }
 
@@ -63,7 +74,7 @@ const Search = ({label, handler, value, placeholder}) => {
   )
 }
 
-const Main = ({filterBy, countries, handler, showButton}) => {
+const Main = ({filterBy, countries, handler, showButton,}) => {
   let filterCountries = [showButton[0]]
 
   if (filterBy.length === 0) {
@@ -100,7 +111,7 @@ function App() {
   const [ countries, setCountries ] = useState([]);
   const [ filterBy, setFilterBy ] = useState('');
   const [ showButton, setShowButton ] = useState([{}, false]);
-  
+
 
   useEffect( () => {
     axios
