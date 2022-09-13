@@ -30,7 +30,7 @@ const Weather = ({country}) => {
 
   return <div>
       <h3>Weather in {country.name.common}</h3>
-      <p>temperature: {weather.main.temp - 273.15}º Celcius</p>
+      <p>temperature: {parseFloat(weather.main.temp - 273.15).toFixed(2)}º Celcius</p>
       <i>icon</i>
       <p>wind: {weather.wind.speed} m/s</p>
   </div>
