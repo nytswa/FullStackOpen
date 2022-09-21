@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getContacts } from './getContacts'
 import { addContact } from './addContact'
-import { delContact } from './delContact'
-
 
 const GeneralInput = ({handler, value, name}) => {
   return (
@@ -25,10 +23,9 @@ const NewContact = ({handleName, handleSubmit, handlePhone, nameValue, phoneValu
   )
 }
 
-const Person = ({p, handler}) => <div>{p.name} {p.number} <button onClick={() => handler(p)}>⤬</button></div>
+const Person = ({p}) => <p>{p.name} {p.number}</p>
 
-
-const Contacts = ({persons, filter, handler}) => {
+const Contacts = ({persons, filter}) => {
   return <div>
     <h2>Numbers</h2>
     {persons
@@ -36,7 +33,7 @@ const Contacts = ({persons, filter, handler}) => {
           return (filter === '') ? true : p.name.toLowerCase().startsWith(filter.toLowerCase())
         })
         .map((p) => {
-          return <Person key={p.name} p={p} handler={handler}></Person>
+          return <Person key={p.name} p={p}></Person>
       })}
   </div>
 }
@@ -47,7 +44,6 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterBy, setFilterBy] = useState('')
-  let getPerson = {}
 
   // const [persons, setPersons] = useState(getContacts());
   // useEffect( () => getContact(setPersons), [])
@@ -64,25 +60,16 @@ const App = () => {
       number: newPhone
     }
     if (persons.findIndex(element => element.name === person.name) === -1) {
-      // Lo añade a la base de datos json-server
-      getPerson = addContact(person, persons, setPersons)
-
-      // Simula estar en Sync: lo añade al estado local (sin id)
-      // setPersons(persons.concat(person))
-      
+      // lo añade a la base de datos json-server
+      addContact(person)
+      // Simula estar en Sync: lo añade al estado local
+      setPersons(persons.concat(person))
       setNewName('')
       setNewPhone('')
     }
     else {
       alert(`${person.name} is already added to phonebook.`)
     }
-  }
-
-  const handleDelete = (p) => {
-    console.log('handleDelete', p)
-    delContact(p)
-    setPersons(persons
-      .filter(m => m.id !== p.id))
   }
 
   return (
@@ -98,7 +85,7 @@ const App = () => {
         phoneValue={newPhone}
       ></NewContact>
       
-      <Contacts persons={persons} filter={filterBy} handler={handleDelete}></Contacts>
+      <Contacts persons={persons} filter={filterBy}></Contacts>
     </div>
   )
 }
