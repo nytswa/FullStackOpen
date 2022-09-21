@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { getContacts } from './getContacts'
 import { addContact } from './addContact'
 import { delContact } from './delContact'
+import { editContact } from './editContact'
+
 
 
 const GeneralInput = ({handler, value, name}) => {
@@ -73,7 +75,15 @@ const App = () => {
       setNewPhone('')
     }
     else {
-      alert(`${person.name} is already added to phonebook.`)
+      let message = "is already added to phonebook, replace the old number with the new one provided?"
+      if (window.confirm(`${person.name} ${message}`))  {
+        // Look and find inside the state "database" (where it does have id)
+        const getPerson = persons.find(e => e.name === person.name)
+        // Change the number
+        getPerson.number = person.number
+        // Send as PUT request and update state
+        editContact(getPerson, persons, setPersons)
+      }
     }
   }
 
