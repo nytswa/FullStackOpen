@@ -47,7 +47,6 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterBy, setFilterBy] = useState('')
-  let getPerson = {}
 
   // const [persons, setPersons] = useState(getContacts());
   // useEffect( () => getContact(setPersons), [])
@@ -65,7 +64,7 @@ const App = () => {
     }
     if (persons.findIndex(element => element.name === person.name) === -1) {
       // Lo añade a la base de datos json-server
-      getPerson = addContact(person, persons, setPersons)
+      addContact(person, persons, setPersons)
 
       // Simula estar en Sync: lo añade al estado local (sin id)
       // setPersons(persons.concat(person))
@@ -79,10 +78,12 @@ const App = () => {
   }
 
   const handleDelete = (p) => {
-    console.log('handleDelete', p)
-    delContact(p)
-    setPersons(persons
-      .filter(m => m.id !== p.id))
+    if (window.confirm(`Do you really want to delete ${p.name} from you contacts?`))  {
+      // console.log('handleDelete', p)
+      delContact(p.id)
+      setPersons(persons
+        .filter(m => m.id !== p.id))
+    }
   }
 
   return (
