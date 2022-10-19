@@ -28,13 +28,23 @@ const NewContact = ({handleName, handleSubmit, handlePhone, nameValue, phoneValu
   )
 }
 
-const Notification = ({message}) => {
+const Notification = ({message, color}) => {
   if (message === null) {
     return null
   }
 
+  const error = {
+    color: 'rgb(11, 11, 11)',
+    background: 'rgb(185, 230, 205)',
+    fontSize: 20,
+    border: '1px solid rgb(11, 11, 11)',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
   return (
-    <div className='error'>
+    <div style={error} className='error'>
       {message}
     </div>
   )
@@ -98,7 +108,7 @@ const App = () => {
         getPerson.number = person.number
         // Send as PUT request and update state
         editContact(getPerson, persons, setPersons)
-        
+
         editErrorMessage(setErrorMessage, 5000, `${person.name} has been edited.`)
       }
     }
