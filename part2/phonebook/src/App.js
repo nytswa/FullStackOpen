@@ -3,6 +3,7 @@ import { getContacts } from './getContacts'
 import { addContact } from './addContact'
 import { delContact } from './delContact'
 import { editContact } from './editContact'
+import { editErrorMessage } from './generalFunctions'
 
 
 
@@ -27,7 +28,19 @@ const NewContact = ({handleName, handleSubmit, handlePhone, nameValue, phoneValu
   )
 }
 
-const Person = ({p, handler}) => <div>{p.name} {p.number} <button onClick={() => handler(p)}>⤬</button></div>
+const Notification = ({message}) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
+const Person = ({p, handler}) => <div className='contact'>{p.name} {p.number} <button onClick={() => handler(p)}>⤬</button></div>
 
 
 const Contacts = ({persons, filter, handler}) => {
@@ -49,6 +62,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterBy, setFilterBy] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   // const [persons, setPersons] = useState(getContacts());
   // useEffect( () => getContact(setPersons), [])
@@ -71,6 +85,7 @@ const App = () => {
       // Simula estar en Sync: lo añade al estado local (sin id)
       // setPersons(persons.concat(person))
       
+      editErrorMessage(setErrorMessage, 5000, `${newName} has been added.`)
       setNewName('')
       setNewPhone('')
     }
@@ -83,6 +98,8 @@ const App = () => {
         getPerson.number = person.number
         // Send as PUT request and update state
         editContact(getPerson, persons, setPersons)
+        
+        editErrorMessage(setErrorMessage, 5000, `${person.name} has been edited.`)
       }
     }
   }
@@ -93,12 +110,15 @@ const App = () => {
       delContact(p.id)
       setPersons(persons
         .filter(m => m.id !== p.id))
+
+      editErrorMessage(setErrorMessage, 5000, `${p.name} has been deleted.`)
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage}></Notification>
       <GeneralInput handler={ (e) => handler(e, setFilterBy) } value={filterBy} name='search'></GeneralInput>
 
       <NewContact 

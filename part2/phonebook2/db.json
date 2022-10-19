@@ -22,13 +22,8 @@
     },
     {
       "name": "Austin",
-      "number": "00",
+      "number": "0000",
       "id": 5
-    },
-    {
-      "name": "Austin Feltan",
-      "number": "0",
-      "id": 6
     }
   ]
 }
