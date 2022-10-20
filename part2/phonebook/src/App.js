@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getContacts } from './getContacts'
-import { addContact } from './addContact'
-import { delContact } from './delContact'
-import { editContact } from './editContact'
 import { editErrorMessage } from './generalFunctions'
-
+import * as contacts from './contactsRequests'
 
 
 const GeneralInput = ({handler, value, name}) => {
@@ -28,14 +24,14 @@ const NewContact = ({handleName, handleSubmit, handlePhone, nameValue, phoneValu
   )
 }
 
-const Notification = ({message, color}) => {
+const Notification = ({message}) => {
   if (message === null) {
     return null
   }
 
   const error = {
-    color: 'rgb(11, 11, 11)',
-    background: 'rgb(185, 230, 205)',
+    color: message.color,
+    background: 'rgb(240, 240, 240)',
     fontSize: 20,
     border: '1px solid rgb(11, 11, 11)',
     borderRadius: 5,
@@ -44,8 +40,8 @@ const Notification = ({message, color}) => {
   }
 
   return (
-    <div style={error} className='error'>
-      {message}
+    <div style={error}>
+      {message.message}
     </div>
   )
 }
@@ -76,7 +72,8 @@ const App = () => {
 
   // const [persons, setPersons] = useState(getContacts());
   // useEffect( () => getContact(setPersons), [])
-  useEffect( () => getContacts(setPersons), [])
+  // useEffect( () => getContacts(setPersons), [])
+  useEffect( () => contacts.get(setPersons), [])
 
   const handler = (event, change) => {
     return change(event.target.value)
@@ -90,12 +87,18 @@ const App = () => {
     }
     if (persons.findIndex(element => element.name === person.name) === -1) {
       // Lo añade a la base de datos json-server
-      addContact(person, persons, setPersons)
+      contacts.add(person, persons, setPersons)
 
       // Simula estar en Sync: lo añade al estado local (sin id)
       // setPersons(persons.concat(person))
       
-      editErrorMessage(setErrorMessage, 5000, `${newName} has been added.`)
+
+      const errorObject = {
+        color: 'green',
+        message: `${newName} has been added.`
+      }
+      editErrorMessage(setErrorMessage, 5000, errorObject)
+
       setNewName('')
       setNewPhone('')
     }
@@ -107,9 +110,7 @@ const App = () => {
         // Change the number
         getPerson.number = person.number
         // Send as PUT request and update state
-        editContact(getPerson, persons, setPersons)
-
-        editErrorMessage(setErrorMessage, 5000, `${person.name} has been edited.`)
+        contacts.edit(getPerson, persons, setPersons, editErrorMessage, setErrorMessage)
       }
     }
   }
@@ -117,11 +118,9 @@ const App = () => {
   const handleDelete = (p) => {
     if (window.confirm(`Do you really want to delete ${p.name} from you contacts?`))  {
       // console.log('handleDelete', p)
-      delContact(p.id)
+      contacts.del(p.id, p.name, editErrorMessage, setErrorMessage)
       setPersons(persons
         .filter(m => m.id !== p.id))
-
-      editErrorMessage(setErrorMessage, 5000, `${p.name} has been deleted.`)
     }
   }
 
