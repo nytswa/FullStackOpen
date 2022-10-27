@@ -1,32 +1,37 @@
 console.log('Package JSON Starting Point')
 
-const { response } = require('express')
 const express = require('express')
+const logger = require('./loggerMiddleware')
+
 const app = express()
+
+app.use(express.json())
+
+app.use(logger)
 
 
 let notes = [
     {
         "id": 1,
-        "content": 'Hola',
+        "content": "Hola",
         "date": 001,
         "important": false
     },
     {
         "id": 2,
-        "content": 'como',
+        "content": "como",
         "date": 002,
         "important": false
     },
     {
         "id": 3,
-        "content": 'estas',
+        "content": "estas",
         "date": 003,
         "important": false
     },
     {
         "id": 4,
-        "content": '?',
+        "content": "?",
         "date": 004,
         "important": false
     }
@@ -61,6 +66,39 @@ app.delete('/api/notes/:id', (request, response) => {
     notes = notes.filter(note => note.id !== id)
 
     response.status(204).end()
+})
+
+app.post('/api/notes', (request, response) => {
+    const note = request.body
+
+    if (!note || !note.content) {
+        response.status(400).json({
+            error: 'note.content is missing'
+        })
+    }
+
+    const ids = notes.map(note => note.id)
+    const maxId = Math.max(...ids)
+
+    const newNote = {
+        id: maxId + 1,
+        content: note.content,
+        important: false || note.important,
+        date: new Date().toISOString()
+    }
+
+    notes = [...notes, newNote]
+
+    response.status(201).json(newNote)
+})
+
+// 404 NOT FOUND catch-path
+app.use((request, response) => {
+    // check which paths
+    console.log(request.path)
+    response.status(404).json({
+        error: "Not found"
+    })
 })
 
 
