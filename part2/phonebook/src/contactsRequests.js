@@ -1,10 +1,12 @@
 import axios from "axios"
 
+const baseURL = "https://evening-river-11436.herokuapp.com/api/persons"
+// "http://localhost:3001/api/persons"
 
 // ADD
 export const add = (person, persons, setPersons) => {
     axios
-        .post("http://localhost:3001/persons", person)
+        .post(baseURL, person)
         .then(response => {
             setPersons(persons.concat(response.data))
         })
@@ -16,7 +18,7 @@ export const add = (person, persons, setPersons) => {
 // DELETE
 export const del = (id, name, editErrorMessage, setErrorMessage) => {
     axios
-        .delete(`http://localhost:3001/persons/${id}`)
+        .delete(`${baseURL}/${id}`)
         .then( () => {
             const errorObject = {
                 color: 'green',
@@ -37,7 +39,7 @@ export const del = (id, name, editErrorMessage, setErrorMessage) => {
 // PUT / EDIT
 export const edit = (person, persons, setPersons, editErrorMessage, setErrorMessage) => {
     axios
-        .put(`http://localhost:3001/persons/${person.id}`, person)
+        .put(`${baseURL}/${person.id}`, person)
         .then(response => {
             setPersons(persons.map( n => n.id !== person.id ? n : response.data ))
             const errorObject = {
@@ -60,7 +62,7 @@ export const edit = (person, persons, setPersons, editErrorMessage, setErrorMess
 // GET ALL
 export const get = (state) => {
     axios
-        .get("http://localhost:3001/persons")
+        .get(baseURL)
         .then( response => {
             state(response.data)
         })
