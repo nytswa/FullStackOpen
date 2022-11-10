@@ -1,0 +1,25 @@
+POST http://localhost:3001/api/persons 
+Content-Type: application/json
+
+{
+    "name": "Austin Feltan",
+    "number": "33450543"
+}
+
+###
+POST http://localhost:3001/api/persons 
+Content-Type: application/json
+
+{
+    "name": "Missing"
+}
+
+###
+POST http://localhost:3001/api/persons 
+Content-Type: application/json
+
+{
+    "name": "Alternative",
+    "number": "2000"
+}
+
