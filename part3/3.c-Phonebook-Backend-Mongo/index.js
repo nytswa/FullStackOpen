@@ -62,29 +62,49 @@ app.get('/api/persons/:id', (req, res, next) => {
             res.status(404).end()
         }
     }).catch(err => next(err))
-        // sending to last USE: middleware to catch not Founds and 40- errors
+        // sending to last USE: middleware to catch not Founds and 40- 40x errors
 })
 
 // Delete 1 using MongoDB
 app.delete('/api/persons/:id', (req, res, next) => {
     const { id } = req.params
+
+    // Search and Destroy - findByIdAndDelete
     Person.findByIdAndRemove(id).then(result => {
         res.status(204).end()
     }).catch(err => next(err))
 })
 
 
-// POST using MongoDB
-app.post('/api/persons', (req, res) => {
-    const person = req.body
+// Update 1 using MongoDB
+app.put('/api/persons/:id', (req, res, next) => {
+    const { id } = req.params
+    const updatedContactData = req.body
+
+    const contact = {
+        name: updatedContactData.name,
+        number: updatedContactData.number
+    }
+
+    // result will be the findById result (not the updated) by default
+    Person.findByIdAndUpdate(id, contact, { new: true }).then(result => {
+        res.status(200).json(result)
+    }).catch(err => next(err))
+})
+
+
+// NOT Functioning correctly. Validation problems?
+// POST using MongoDB 
+app.post('/api/persons', (req, res, next) => {
+    const newContact = req.body
 
     // No input Control
-    if (!person) {
+    if (!newContact) {
         res.status(400).json({
             error: 'Unexpected error: No person data'
         })
     }
-    if (!person.name || !person.number) {
+    if (!newContact.name || !newContact.number) {
         res.status(400).json({
             error: 'Name or Number is missing'
         })
@@ -94,22 +114,22 @@ app.post('/api/persons', (req, res) => {
     // const doesNotExist = persons.findIndex(p => p.name === person.name)
     // Trying find wiht mongo
     else {
-        Person.exists({ name: person.name }).then(contactFind => {
+        Person.exists({ name: newContact.name }).then(contactFind => {
             if (contactFind !== null) {
                 console.log('Person already Exists', contactFind)
                 res.status(400).json({
                     error: 'Name must be unique'
                 })
             }
-        })
+        }).catch(err => next(err))
 
         // Add
         // Create ID: Not anymore since MongoDB creates its own IDs
 
         // Create new Person/Contact
         const contact = new Person({
-            name: person.name,
-            number: person.number
+            name: newContact.name,
+            number: newContact.number
         })
 
         // Save Person/Contact
@@ -124,14 +144,16 @@ app.post('/api/persons', (req, res) => {
 app.use((error, request, response) => {
     // console path
     console.log(request.path)
-    
     console.error(error)
     // console.log(error.name, error.message)
+
+    // Bad Request
     if (error.name === "CastError") {
-        response.status(400).end()
+        response.status(400).send({ error: 'id used is malformed' })
+    } else if (error.name === "Error") {
+        response.status(500).end()
     }
 
-    // response.status(500).send({ error: 'id used is malformed' })
     response.status(404).json({
         error: "Not found"
     })
