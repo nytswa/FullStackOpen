@@ -10,42 +10,49 @@ const cors = require('cors')
 const Person = require('./models/Person')  // after database connection
 
 
-
 const app = express()
 
-// Accept requests from anywhere
+
+// Accept requests from anywhere (backend)
 app.use(cors())
 // json-parser to get easy access to request.body
 app.use(express.json())
 
+
+// Morgan
 morgan.token('content', function (req, res) { return JSON.stringify(req.body) })
 // app.use(morgan('tiny'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 
 let persons = []
-
 // app.use()
 
+
+// Base URL
 app.get('/', (req, res) => {
     res.send('<h1>Phonebook Backend Home Page</h1>')
 })
 
+// INFO page using MongoDB
 app.get('/info', (req, res) => {
     const date = new Date() 
-    res.send(`
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${date}</p>
-    `)
+    Person.find({}).then(contacts => {
+        res.send(`
+            <p>Phonebook has info for ${contacts.length} people</p>
+            <p>${date}</p>
+        `)
+    })
 })
 
-// Get all using mongo/mongoose
+// Get all using MongoDB
 app.get('/api/persons', (req, res) => {
     Person.find({}).then(contacts => {
         res.json(contacts)
     })
 })
 
+// Get 1 with id using MongoDB
 app.get('/api/persons/:id', (req, res, next) => {
     const { id } = req.params
     Person.findById(id).then(person => {
@@ -58,14 +65,16 @@ app.get('/api/persons/:id', (req, res, next) => {
         // sending to last USE: middleware to catch not Founds and 40- errors
 })
 
+// Delete 1 using MongoDB
 app.delete('/api/persons/:id', (req, res, next) => {
     const { id } = req.params
     Person.findByIdAndRemove(id).then(result => {
         res.status(204).end()
     }).catch(err => next(err))
-
 })
 
+
+// POST using MongoDB
 app.post('/api/persons', (req, res) => {
     const person = req.body
 
@@ -129,8 +138,7 @@ app.use((error, request, response) => {
 })
 
 
-const PORT = process.env.PORT
-
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server Running on port ${PORT}`)
 })
