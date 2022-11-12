@@ -7,8 +7,8 @@ const personSchema = new Schema({
     number: Number
 })
 
-// Changing toJSON (pre-processing before saving)
-// edit toJSON, antes de que se mande a la base de datos
+// Changing toJSON
+// edit toJSON, for usage. No changes on the database value and settings
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id

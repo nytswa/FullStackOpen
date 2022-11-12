@@ -6,12 +6,20 @@ Content-Type: application/json
     "number": "33450543"
 }
 
-###
+### No number
 POST http://localhost:3001/api/persons 
 Content-Type: application/json
 
 {
     "name": "Missing"
+}
+
+### No name
+POST http://localhost:3001/api/persons 
+Content-Type: application/json
+
+{
+    "number": "Missing"
 }
 
 ###
@@ -23,3 +31,11 @@ Content-Type: application/json
     "number": "2000"
 }
 
+###
+POST http://localhost:3001/api/persons 
+Content-Type: application/json
+
+{
+    "name": "A",
+    "number": "1"
+}

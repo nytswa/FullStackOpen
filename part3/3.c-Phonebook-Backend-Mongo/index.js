@@ -96,15 +96,14 @@ app.put('/api/persons/:id', (req, res, next) => {
 // NOT Functioning correctly. Validation problems?
 // POST using MongoDB 
 app.post('/api/persons', (req, res, next) => {
-    const newContact = req.body
+    const newData = req.body
 
     // No input Control
-    if (!newContact) {
+    if (!newData) {
         res.status(400).json({
-            error: 'Unexpected error: No person data'
+            error: 'Unexpected error: No contact data'
         })
-    }
-    if (!newContact.name || !newContact.number) {
+    } else if (!newData.name || !newData.number) {
         res.status(400).json({
             error: 'Name or Number is missing'
         })
@@ -112,30 +111,32 @@ app.post('/api/persons', (req, res, next) => {
 
     // Already exists (update this with mongo database find)
     // const doesNotExist = persons.findIndex(p => p.name === person.name)
-    // Trying find wiht mongo
+    
+    // Trying find with mongo
     else {
-        Person.exists({ name: newContact.name }).then(contactFind => {
-            if (contactFind !== null) {
+        Person.exists({ name: newData.name }).then(contactFind => {
+            if (contactFind) {
                 console.log('Person already Exists', contactFind)
                 res.status(400).json({
                     error: 'Name must be unique'
                 })
+            } else {
+                // Add
+                // Create ID: Not anymore since MongoDB creates its own IDs
+                console.log("I shouldn't have entered here")
+                // Create new Person/Contact
+                const contact = new Person({
+                    name: newData.name,
+                    number: newData.number
+                })
+            
+                console.log("I shouldn't be here neither")
+                // Save Person/Contact
+                contact.save().then(savedContact => {
+                    res.status(201).json(savedContact)
+                })
             }
         }).catch(err => next(err))
-
-        // Add
-        // Create ID: Not anymore since MongoDB creates its own IDs
-
-        // Create new Person/Contact
-        const contact = new Person({
-            name: newContact.name,
-            number: newContact.number
-        })
-
-        // Save Person/Contact
-        contact.save().then(savedContact => {
-            res.status(201).json(savedContact)
-        })
     }
 })
 
@@ -151,7 +152,7 @@ app.use((error, request, response) => {
     if (error.name === "CastError") {
         response.status(400).send({ error: 'id used is malformed' })
     } else if (error.name === "Error") {
-        response.status(500).end()
+        response.status(500).send({ error: 'Internal Server Error' })
     }
 
     response.status(404).json({
