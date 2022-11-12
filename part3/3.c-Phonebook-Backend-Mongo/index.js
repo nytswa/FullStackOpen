@@ -9,6 +9,10 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/Person')  // after database connection
 
+// Middlewares imports
+const notFound = require('./middlewares/notFound.js')
+const handleErrors = require('./middlewares/handleErrors.js')
+
 
 const app = express()
 
@@ -25,31 +29,26 @@ morgan.token('content', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 
-let persons = []
-// app.use()
-
-
 // Base URL
 app.get('/', (req, res) => {
     res.send('<h1>Phonebook Backend Home Page</h1>')
 })
 
 // INFO page using MongoDB
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     const date = new Date() 
     Person.find({}).then(contacts => {
         res.send(`
             <p>Phonebook has info for ${contacts.length} people</p>
             <p>${date}</p>
         `)
-    })
+    }).catch(err => next(err))
 })
 
 // Get all using MongoDB
 app.get('/api/persons', (req, res) => {
-    Person.find({}).then(contacts => {
-        res.json(contacts)
-    })
+    Person.find({})
+        .then(contacts => res.json(contacts))
 })
 
 // Get 1 with id using MongoDB
@@ -70,11 +69,10 @@ app.delete('/api/persons/:id', (req, res, next) => {
     const { id } = req.params
 
     // Search and Destroy - findByIdAndDelete
-    Person.findByIdAndRemove(id).then(result => {
-        res.status(204).end()
-    }).catch(err => next(err))
+    Person.findByIdAndRemove(id)
+        .then(() => res.status(204).end())
+        .catch(err => next(err))
 })
-
 
 // Update 1 using MongoDB
 app.put('/api/persons/:id', (req, res, next) => {
@@ -92,8 +90,6 @@ app.put('/api/persons/:id', (req, res, next) => {
     }).catch(err => next(err))
 })
 
-
-// NOT Functioning correctly. Validation problems?
 // POST using MongoDB 
 app.post('/api/persons', (req, res, next) => {
     const newData = req.body
@@ -141,24 +137,9 @@ app.post('/api/persons', (req, res, next) => {
 })
 
 
-// 404 NOT FOUND catch-path
-app.use((error, request, response) => {
-    // console path
-    console.log(request.path)
-    console.error(error)
-    // console.log(error.name, error.message)
-
-    // Bad Request
-    if (error.name === "CastError") {
-        response.status(400).send({ error: 'id used is malformed' })
-    } else if (error.name === "Error") {
-        response.status(500).send({ error: 'Internal Server Error' })
-    }
-
-    response.status(404).json({
-        error: "Not found"
-    })
-})
+// Middlewares
+app.use(notFound)  // 404 NOT FOUND
+app.use(handleErrors)  // Catch Errors
 
 
 const PORT = process.env.PORT || 3001
