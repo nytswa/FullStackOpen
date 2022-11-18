@@ -1,8 +1,9 @@
 import axios from "axios"
 
-export const addContact = (person) => {
+export const delContact = (id) => {
     axios
-        .post("http://localhost:3001/persons", person)
+        .delete(`http://localhost:3001/persons/${id}`)
+        .then()
         .catch(function (error) {
             console.log(error);
         });
