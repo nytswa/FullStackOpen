@@ -8,8 +8,8 @@
 # testing
 /coverage
 
-# production
-/build
+# production (do not ignore for Heroku in case of Frontend -> build)
+# /build
 
 # misc
 .DS_Store
