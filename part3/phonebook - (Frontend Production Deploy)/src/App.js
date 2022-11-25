@@ -87,7 +87,7 @@ const App = () => {
     }
     if (persons.findIndex(element => element.name === person.name) === -1) {
       // Lo añade a la base de datos json-server
-      contacts.add(person, persons, setPersons)
+      contacts.add(person, persons, setPersons, editErrorMessage, setErrorMessage)
 
       // Simula estar en Sync: lo añade al estado local (sin id)
       // setPersons(persons.concat(person))
