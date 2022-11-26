@@ -3,6 +3,8 @@ const suma = (a, b) => {
 }
 
 const palindrome = (string) => {
+  if (typeof string === undefined) return
+
   return string
     .split('')  // Array ['s', 't', 'r', 'i', 'n', 'g']
     .reverse()  // Reverse Array order
@@ -10,6 +12,8 @@ const palindrome = (string) => {
 }
 
 const average1 = array => {
+  if (array.lenth === 0) return 0
+
   let sum = 0
 
   array.forEach(n => sum+= n)
@@ -17,7 +21,7 @@ const average1 = array => {
 }
 
 const average = array => {
-  return array.reducer((sum, num) => sum + num) / array.length
+  return array.reducer((sum, num) => sum + num, 0) / array.length
 }
 
 module.exports = {

@@ -6,16 +6,28 @@ test('palindrome of midudev', () => {
   expect(result).toBe('vedudim')
 })
 
+test('reverse of react', () => {
+  const result = palindrome('react')
+
+  expect(result).toBe('tcaer')
+})
+
 test('palindrome of empry string', () => {
   const result = palindrome('')
 
   expect(result).toBe('')
 })
 
-test('palindrome a', () => {
-  const result = palindrome('a')
+test('palindrome of empry string', () => {
+  const result = palindrome()
 
-  expect(result).toBe('a')
+  expect(result).toBeUndefined()
+})
+
+test('palindrome single char A', () => {
+  const result = palindrome('A')
+
+  expect(result).toBe('A')
 })
 
 test('palindrome ana', () => {
@@ -24,8 +36,3 @@ test('palindrome ana', () => {
   expect(result).toBe('ana')
 })
 
-test('reverse of react', () => {
-  const result = palindrome('react')
-
-  expect(result).toBe('tcaer')
-})
