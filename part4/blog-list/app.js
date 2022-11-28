@@ -3,14 +3,15 @@ const logger = require('./utils/logger')
 // const middleware = require('./utils/middleware')
 const express = require('express')
 const cors = require('cors')
-const blogsRouter = require('./controllers/blogs')
-
-// Express APP
-const app = express()
 
 // Mongo DB
 logger.info('connecting to', config.MONGODB_URI)
 require('./mongo')
+
+const blogsRouter = require('./controllers/blogs')
+
+// Express APP
+const app = express()
 
 app.use(cors())
 app.use(express.static('build'))
