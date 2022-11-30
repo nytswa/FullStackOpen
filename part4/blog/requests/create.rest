@@ -1,0 +1,20 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "author": "Austin Feltan",
+    "title": "My Personal Life",
+    "url": "123456",
+    "likes": 1
+}
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "author": "Austin Feltan",
+    "title": "My Personal Life",
+    "url": "123456",
+    "likes": 1
+}

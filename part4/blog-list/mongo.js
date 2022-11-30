@@ -19,6 +19,9 @@ mongoose.connect(config.MONGODB_URI)
 // Disconnecting MongoDB
 process.on('uncaughtException', () => {
   mongoose.connection.disconnect()
+  .then(() => {
+    console.log('Disconnected from MongoDB')
+  })
 })
 
 // OR on App termination (node)
