@@ -2,6 +2,8 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 // const middleware = require('./utils/middleware')
 const express = require('express')
+// Express APP
+const app = express()
 const cors = require('cors')
 
 // Mongo DB
@@ -10,11 +12,9 @@ require('./mongo')
 
 const blogsRouter = require('./controllers/blogs')
 
-// Express APP
-const app = express()
 
 app.use(cors())
-app.use(express.static('build'))
+// app.use(express.static('build'))
 app.use(express.json())
 // app.use(middleware.requestLogger)
 

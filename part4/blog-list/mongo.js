@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
-// const Blog = require('./models/Blog')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
-
-// connection string
-const connectionString = process.env.MONGODB_URI
 
 
 mongoose.connect(config.MONGODB_URI)
@@ -17,12 +13,12 @@ mongoose.connect(config.MONGODB_URI)
 
 
 // Disconnecting MongoDB
-process.on('uncaughtException', () => {
-  mongoose.connection.disconnect()
-  .then(() => {
-    console.log('Disconnected from MongoDB')
-  })
-})
+// process.on('uncaughtException', () => {
+//   mongoose.connection.disconnect()
+//   .then(() => {
+//     console.log('Disconnected from MongoDB')
+//   })
+// })
 
 // OR on App termination (node)
 // process.on('SIGINT', function() {
@@ -33,4 +29,4 @@ process.on('uncaughtException', () => {
 // });
 
 
-module.exports = mongoose
+// module.exports = mongoose
