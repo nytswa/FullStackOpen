@@ -1,6 +1,20 @@
 const dummy = require('../utils/list_helper').dummy
 const totalLikes = require('../utils/list_helper').totalLikes
 const favoriteBlog = require('../utils/list_helper').favoriteBlog
+const mostBlogs = require('../utils/list_helper').mostBlogs
+
+const mostBlogsOne = {
+  author: 'Edsger W. Dijkstra',
+  blogs: 1
+}
+const mostBlogsThree = {
+  author: 'Edsger W. Dijkstra',
+  blogs: 3
+}
+const mostBlogsFive = {
+  author: 'Edsger W. Dijkstra',
+  blogs: 5
+}
 
 const favoriteBlogExample = {
   title: 'Go To Statement Considered Harmful',
@@ -115,4 +129,10 @@ describe('favorite blog', () => {
   test('when list has only blog equals the likes of that', () => expect(favoriteBlog(listWithOneBlog)).toEqual(favoriteBlogExample))
   test('of 3 equal blogs', () => expect(favoriteBlog(listWithThreeEqualBlogs)).toEqual(favoriteBlogExample))
   test('of 5 blogs', () => expect(favoriteBlog(listWithFiveBlogs)).toEqual(favoriteBlogExample))
+})
+
+describe('Author with most blogs', () => {
+  test('of one', () => expect(mostBlogs(listWithOneBlog)).toEqual(mostBlogsOne))
+  test('of 3', () => expect(mostBlogs(listWithThreeEqualBlogs)).toEqual(mostBlogsThree))
+  test('of 5', () => expect(mostBlogs(listWithFiveBlogs)).toEqual(mostBlogsFive))
 })
