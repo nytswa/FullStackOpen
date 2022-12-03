@@ -12,6 +12,13 @@ test('returned values are objects/json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
+test('json returned', async () => {
+  const response = await api.get('/api/blogs')
+  // expect(response.body).toHaveLenght(2)
+  expect(typeof response.body).toBe('object')
+  expect(typeof response.body).not.toBe('array')
+})
+
 afterAll(() => {
   mongoose.connection.close()
   server.close()
