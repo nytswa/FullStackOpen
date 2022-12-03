@@ -61,7 +61,7 @@ test('check first blog: author, title, url', async () => {
 })
 
 test('a valid blog can be added', async () => {
-  const newBlog = {
+  const newVBlog = {
     "author": "None",
     "title": "Nothing",
     "url": "333",
@@ -69,7 +69,7 @@ test('a valid blog can be added', async () => {
   }
 
   await api.post('/api/blogs')
-    .send(newBlog)
+    .send(newVBlog)
     .expect(201)  // Created
     .expect('Content-Type', /application\/json/)
 
@@ -77,8 +77,46 @@ test('a valid blog can be added', async () => {
 
   const authors = response.body.map(blog => blog.author)
   const titles = response.body.map(blog => blog.title)
-  expect(authors).toContain(newBlog.author)
-  expect(titles).toContain(newBlog.title)
+  expect(authors).toContain(newVBlog.author)
+  expect(titles).toContain(newVBlog.title)
+})
+
+test('an invalid blog with no author is not added', async () => {
+  const newInBlog = {
+    "title": "Nothing",
+    "url": "333",
+    "likes": 3
+  }
+
+  await api.post('/api/blogs')
+    .send(newInBlog)
+    .expect(400)  // Created
+
+  const response = await api.get('/api/blogs')
+
+  const authors = response.body.map(blog => blog.author)
+  const titles = response.body.map(blog => blog.title)
+  expect(authors).not.toContain('None')
+  expect(titles).not.toContain(newInBlog.title)
+})
+
+test.only('an invalid blog with no title is not added', async () => {
+  const newInBlog = {
+    "author": "None",
+    "url": "333",
+    "likes": 3
+  }
+
+  await api.post('/api/blogs')
+    .send(newInBlog)
+    .expect(400)  // Created
+
+  const response = await api.get('/api/blogs')
+
+  const authors = response.body.map(blog => blog.author)
+  const titles = response.body.map(blog => blog.title)
+  expect(authors).not.toContain(newInBlog.author)
+  expect(titles).not.toContain('Nothing')
 })
 
 afterAll(() => {
