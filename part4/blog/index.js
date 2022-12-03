@@ -3,8 +3,13 @@ const http = require('http')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 
-const server = http.createServer(app)
+const server_app = http.createServer(app)
 
-server.listen(config.PORT, () => {
+const server = server_app.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`)
 })
+
+module.exports = {
+  server,
+  server_app
+}

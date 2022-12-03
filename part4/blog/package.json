@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --silent --detectOpenHandles",
+    "test:watch": "npm run test -- --watch"
   },
   "author": "Austin",
   "license": "ISC",
@@ -19,7 +20,8 @@
     "nodemon": "2.0.20"
   },
   "devDependencies": {
-    "jest": "29.3.1"
+    "jest": "29.3.1",
+    "supertest": "6.3.2"
   },
   "jest": {
     "testEnvironment": "node"

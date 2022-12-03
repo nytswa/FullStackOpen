@@ -104,7 +104,7 @@ const listWithFiveBlogs = [
 ]
 
 
-describe('dummy', () => {
+describe.skip('dummy', () => {
   test('returns one', () => {
     const blogs = []
   
@@ -117,21 +117,21 @@ describe('dummy', () => {
   test('1 element string returns one', () => expect(dummy(['a'])).toBe(1))
 })
 
-describe('total likes ', () => {
+describe.skip('total likes ', () => {
   test('of empty list is zero', () => expect(totalLikes([])).toBe(0))
   test('when list has only blog equals the likes of that', () => expect(totalLikes(listWithOneBlog)).toBe(5))
   test('of a bigger list is calculated right', () => expect(totalLikes(listWithThreeEqualBlogs)).toBe(15))
   test('of 5 blogs', () => expect(totalLikes(listWithFiveBlogs)).toBe(15))
 })
 
-describe('favorite blog', () => {
+describe.skip('favorite blog', () => {
   test('of empty list is undefined', () => expect(favoriteBlog([])).toEqual(undefined))
   test('when list has only blog equals the likes of that', () => expect(favoriteBlog(listWithOneBlog)).toEqual(favoriteBlogExample))
   test('of 3 equal blogs', () => expect(favoriteBlog(listWithThreeEqualBlogs)).toEqual(favoriteBlogExample))
   test('of 5 blogs', () => expect(favoriteBlog(listWithFiveBlogs)).toEqual(favoriteBlogExample))
 })
 
-describe('Author with most blogs', () => {
+describe.skip('Author with most blogs', () => {
   test('of one', () => expect(mostBlogs(listWithOneBlog)).toEqual(mostBlogsOne))
   test('of 3', () => expect(mostBlogs(listWithThreeEqualBlogs)).toEqual(mostBlogsThree))
   test('of 5', () => expect(mostBlogs(listWithFiveBlogs)).toEqual(mostBlogsFive))
