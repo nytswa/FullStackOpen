@@ -1,25 +1,9 @@
 const mongoose = require('mongoose')
-const supertest = require('supertest')
-const app = require('../index').server_app
 const server = require('../index').server
 const Blog = require('../models/Blog')
+const { api, initialBlogs, getAllBlogs } = require('./helpers')
 
-const api = supertest(app)
 
-const initialBlogs = [
-  {
-    "author": "Austin Feltan",
-    "title": "My Personal Life",
-    "url": "111",
-    "likes": 1
-  },
-  {
-    "author": "Austin Feltan",
-    "title": "Studies",
-    "url": "222",
-    "likes": 2
-  }
-]
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -92,10 +76,7 @@ test('an invalid blog with no author is not added', async () => {
     .send(newInBlog)
     .expect(400)  // Created
 
-  const response = await api.get('/api/blogs')
-
-  const authors = response.body.map(blog => blog.author)
-  const titles = response.body.map(blog => blog.title)
+  const { authors, titles } = await getAllBlogs()
   expect(authors).not.toContain('None')
   expect(titles).not.toContain(newInBlog.title)
 }, 12000)
@@ -112,7 +93,7 @@ test('an invalid blog with no title is not added', async () => {
     .expect(400)  // Created
 
   const response = await api.get('/api/blogs')
-
+  
   const authors = response.body.map(blog => blog.author)
   const titles = response.body.map(blog => blog.title)
   expect(authors).not.toContain(newInBlog.author)
