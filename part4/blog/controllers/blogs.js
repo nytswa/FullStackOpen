@@ -1,6 +1,5 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/Blog')
-const validBlog = require('../utils/generalFunctions')
 
 console.log('Logging inside Controllers')
 
@@ -12,7 +11,7 @@ blogsRouter.get('/', (request, response) => {
     })
 })
 
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', (request, response, next) => {
   const blog = new Blog(request.body)
 
   // No input Control
@@ -36,7 +35,6 @@ blogsRouter.post('/', (request, response) => {
         // Add
         // Create ID: Not anymore since MongoDB creates its own IDs
 
-          if (validBlog(blog)) {
           // Create new Person/Contact
           const newblog = new Blog({
             title: blog.title,
@@ -50,11 +48,11 @@ blogsRouter.post('/', (request, response) => {
             .then(savedBlog => {
               response.status(201).json(savedBlog)
             })
-          }
         }
       })
-      .catch(err => next(err))
+      // .catch(err => next(err))
   }
 })
+
 
 module.exports = blogsRouter
