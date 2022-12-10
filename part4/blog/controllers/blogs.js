@@ -67,9 +67,9 @@ blogsRouter.post('/', async (request, response) => {
     response.status(400).json({
       error: 'Unexpected error: No blog data'
     })
-  } else if (!blog.author || !blog.title) {
+  } else if (!blog.author || !blog.title || !blog.url) {
     response.status(400).json({
-      error: 'Author or Title is missing'
+      error: 'URL or Title/Author is missing'
     })
   } else {
     const blogFind = await Blog.exists({ title: blog.title })

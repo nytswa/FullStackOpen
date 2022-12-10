@@ -101,6 +101,27 @@ test('an invalid blog with no title is not added', async () => {
   expect(titles).not.toContain('Nothing')
 }, 22000)
 
+test('an invalid blog with no url is not added', async () => {
+  const newInBlog = {
+    "title": "Nothing",
+    "author": "None",
+    "likes": 4
+  }
+
+  const responsePost = await api.post('/api/blogs')
+    .send(newInBlog)
+    .expect(400)  // Created
+  
+  expect(responsePost.body).toEqual({ error: 'URL or Title/Author is missing' })
+
+  const response = await api.get('/api/blogs')
+  
+  const authors = response.body.map(blog => blog.author)
+  const titles = response.body.map(blog => blog.title)
+  expect(authors).not.toContain(newInBlog.author)
+  expect(titles).not.toContain(newInBlog.title)
+}, 22000)
+
 test('likes missing from request will still be 0', async () => {
   const newInBlog = {
     "author": "None",
