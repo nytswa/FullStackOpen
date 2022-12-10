@@ -33,6 +33,11 @@ test('returned length', async () => {
   expect(response.body).toHaveLength(initialBlogs.length)  // same as above
 }, 12000)
 
+test('ID unique identifier property named correctly', async () => {
+  const response = await api.get('/api/blogs')
+  expect(response.body[0].id).toBeDefined()
+}, 12000)
+
 test('check first blog: author, title, url', async () => {
   const response = await api.get('/api/blogs')
   
@@ -40,6 +45,8 @@ test('check first blog: author, title, url', async () => {
   const titles = response.body.map(blog => blog.title)
   expect(authors).toContain(initialBlogs[0].author)
   expect(titles).toContain(initialBlogs[0].title)
+
+  expect(response.body[0].id).toBeDefined()
   
   expect(response.body[0].url).toBe(initialBlogs[0].url)
 }, 12000)
@@ -99,6 +106,8 @@ test('an invalid blog with no title is not added', async () => {
   expect(authors).not.toContain(newInBlog.author)
   expect(titles).not.toContain('Nothing')
 }, 22000)
+
+
 
 afterAll(() => {
   mongoose.connection.close()
