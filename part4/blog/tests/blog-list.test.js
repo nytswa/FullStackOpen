@@ -4,7 +4,6 @@ const Blog = require('../models/Blog')
 const { api, initialBlogs, getAllBlogs } = require('./helpers')
 
 
-
 beforeEach(async () => {
   await Blog.deleteMany({})
 
@@ -31,6 +30,7 @@ test('json returned', async () => {
 test('returned length', async () => {
   const response = await api.get('/api/blogs')
   expect(response.body.length).toBe(initialBlogs.length)
+  expect(response.body).toHaveLength(initialBlogs.length)  // same as above
 }, 12000)
 
 test('check first blog: author, title, url', async () => {
@@ -79,7 +79,7 @@ test('an invalid blog with no author is not added', async () => {
   const { authors, titles } = await getAllBlogs()
   expect(authors).not.toContain('None')
   expect(titles).not.toContain(newInBlog.title)
-}, 12000)
+}, 22000)
 
 test('an invalid blog with no title is not added', async () => {
   const newInBlog = {
@@ -98,7 +98,7 @@ test('an invalid blog with no title is not added', async () => {
   const titles = response.body.map(blog => blog.title)
   expect(authors).not.toContain(newInBlog.author)
   expect(titles).not.toContain('Nothing')
-}, 12000)
+}, 22000)
 
 afterAll(() => {
   mongoose.connection.close()
