@@ -45,8 +45,6 @@ test('check first blog: author, title, url', async () => {
   const titles = response.body.map(blog => blog.title)
   expect(authors).toContain(initialBlogs[0].author)
   expect(titles).toContain(initialBlogs[0].title)
-
-  expect(response.body[0].id).toBeDefined()
   
   expect(response.body[0].url).toBe(initialBlogs[0].url)
 }, 12000)
