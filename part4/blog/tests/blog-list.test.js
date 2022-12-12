@@ -144,7 +144,7 @@ describe('invalid blogs', () => {
 })
 
 describe('by ID', () => {
-  test('deleting', async () => {
+  test('deleting an existing blog', async () => {
     const response = await api.get('/api/blogs')
     const blog = response.body[0]
     await api
@@ -152,9 +152,16 @@ describe('by ID', () => {
       .expect(204)
   }, 22000)
   
-  test('getting 1', async () => {
+  test('getting 1 that exists always', async () => {
     await api
       .get('/api/blogs/638a89069bfddaf7b371098d')
+      .expect(200)
+  }, 22000)
+
+  test('updating 1 existing blog', async () => {
+    await api
+      .put('/api/blogs/638a89069bfddaf7b371098d')
+      .send(initialBlogs[2])
       .expect(200)
   }, 22000)
 })

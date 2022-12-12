@@ -16,6 +16,12 @@ const initialBlogs = [
     "title": "Studies",
     "url": "222",
     "likes": 2
+  },
+  {
+    "author": "Austin",
+    "title": "My Life",
+    "url": "333",
+    "likes": 10
   }
 ]
 
