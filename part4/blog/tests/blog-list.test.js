@@ -143,6 +143,20 @@ describe('invalid blogs', () => {
   }, 22000)
 })
 
+test('deleting by ID', async () => {
+  const response = await api.get('/api/blogs')
+  const blog = response.body[0]
+  await api
+    .delete(`/api/blogs/${blog.id}`)
+    .expect(204)
+}, 22000)
+
+test('getting 1 by ID', async () => {
+  await api
+    .get('/api/blogs/638a89069bfddaf7b371098d')
+    .expect(200)
+}, 22000)
+
 
 afterAll(() => {
   mongoose.connection.close()

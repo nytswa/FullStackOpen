@@ -14,6 +14,17 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+blogsRouter.get('/:id', async (request, response, next) => {
+  const { id } = request.params
+  try {
+    const blog = await Blog.findById(id)
+    response.status(200).json(blog)
+  } catch (error) {
+    console.error(error)
+    // next(error)
+  }
+})
+
 // .THEN
 // blogsRouter.post('/', (request, response, next) => {
 //   const blog = new Blog(request.body)
@@ -95,6 +106,18 @@ blogsRouter.post('/', async (request, response) => {
       response.status(201).json(savedBlog)
     } 
   }   
+})
+
+blogsRouter.delete('/:id', async (request, response, next) => {
+  const { id } = request.params
+  try {
+    const blog = await Blog.findByIdAndDelete(id)
+    response.status(204).json(blog)
+  }
+  catch (error) {
+    console.error(error)
+    // next(error)
+  }
 })
 
 
