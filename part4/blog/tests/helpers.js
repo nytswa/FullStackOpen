@@ -1,7 +1,7 @@
 const supertest = require('supertest')
 const app = require('../index').server_app
 
-
+// Testing api
 const api = supertest(app)
 
 const initialBlogs = [
@@ -36,8 +36,13 @@ const getAllBlogs = async () => {
   }
 }
 
+const usersInDb = async () => {
+  return await api.get('/api/users')
+}
+
 module.exports = {
   api,
   initialBlogs,
-  getAllBlogs
+  getAllBlogs,
+  usersInDb
 }

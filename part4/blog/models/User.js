@@ -1,12 +1,12 @@
-const mongoose = require('mongoose')
+const {Schema, model} = require('mongoose')
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: String,
   name: String,
   passwordHash: String,
   blogs: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Blog'
     }
   ]
@@ -21,6 +21,6 @@ userSchema.set('toJSON', {
   }
 })
 
-const User = mongoose.model('User', userSchema)
+const User = model('User', userSchema)
 
 module.exports = User
