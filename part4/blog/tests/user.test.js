@@ -19,25 +19,25 @@ describe('when there is initially one user in db', () => {
   test('Successfully created', async () => {
     // const usersAtStart = await usersInDb()  // helpers
     // const { body: usersAtStart } = await api.get('/api/users')
-    const usersAtStart = await User.find({})
-
+    const usersDB = await User.find({})
+    const usersAtStart = usersDB.map(u => u.toJSON())
     // console.log(usersAtStart)
 
-    const newUser = new User({ 
+    const newUser = {
       username: 'mluukkai',
       name: 'Matti Luukkainen',
-      passwordHash: 'salainen'
-    })
+      password: 'salainen'
+    }
 
-    
-    const savedNewUser = await newUser.save()
-    // const userCreated = await api
-    //   .post('api/users')
-    //   .send(newUser)
-    //   .expect(204)
-    //   .expect('Content-Type', /application\/json/)
-    
-    const usersAtEnd = await User.find({})
+    // const savedNewUser = await newUser.save()
+    const userCreated = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(204)
+      .expect('Content-Type', /application\/json/)
+
+    const usersDB2 = await User.find({})
+    const usersAtEnd = usersDB2.map(u => u.toJSON())
     // console.log(usersAtEnd)
 
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
