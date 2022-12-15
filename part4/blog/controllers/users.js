@@ -8,7 +8,7 @@ usersRouter.get('/', async (request, response, next) => {
 })
 
 usersRouter.post('/', async (request, response, next) => {
-  const { username, name, password } = request.body
+  const { username, name, password, blogs } = request.body
 
   const userFind = await User.exists({ username: username })
   
@@ -38,7 +38,7 @@ usersRouter.post('/', async (request, response, next) => {
   
     const savedUser = await user.save()
   
-    response.status(204).json(savedUser)  // or 204
+    response.status(201).json(savedUser)
   }
 })
 

@@ -82,6 +82,10 @@ blogsRouter.post('/', async (request, response) => {
     response.status(400).json({
       error: 'URL or Title/Author is missing'
     })
+  } else if (!blog.user) {
+    response.status(400).json({
+      error: 'User/owner missing'
+    })
   } else {
     const blogFind = await Blog.exists({ title: blog.title })
     if (blogFind) {
@@ -98,7 +102,8 @@ blogsRouter.post('/', async (request, response) => {
         title: blog.title,
         author: blog.author,
         url: blog.url || 'http',
-        likes: blog.likes || 0
+        likes: blog.likes || 0,
+        user: blog.user
       })
 
       // save
