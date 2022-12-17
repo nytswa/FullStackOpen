@@ -1,5 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/Blog')
+const User = require('../models/User')
+
 
 console.log('Logging inside Controllers')
 
@@ -69,9 +71,13 @@ blogsRouter.get('/:id', async (request, response, next) => {
 //   }
 // })
 
+
 // await POST
 blogsRouter.post('/', async (request, response) => {
+  const { userId } = request.body
   const blog = new Blog(request.body)
+
+  const user = await User.findById(userId)
 
   // No input Control
   if (!blog) {
@@ -103,12 +109,20 @@ blogsRouter.post('/', async (request, response) => {
         author: blog.author,
         url: blog.url || 'http',
         likes: blog.likes || 0,
-        user: blog.user
+        user: user._id
       })
 
-      // save
-      const savedBlog = await blog.save()
-      response.status(201).json(savedBlog)
+      try {
+        // save blog + 'updating' user with blog
+        const savedBlog = await blog.save()
+        user.blogs = user.blogs.concat(savedBlog._id)  // or savedBlog.toJSON().id
+        await user.save()
+  
+        response.status(201).json(savedBlog)
+      } catch (error) {
+        console.error(error)
+        response.status(400).json({ error })
+      }
     } 
   }   
 })

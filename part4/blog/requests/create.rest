@@ -5,7 +5,8 @@ Content-Type: application/json
     "author": "Austin Feltan",
     "title": "My Personal Life",
     "url": "123456",
-    "likes": 1
+    "likes": 1,
+    "userId": "639ce8c57498c8695b9c8e45"
 }
 
 ###
@@ -16,5 +17,6 @@ Content-Type: application/json
     "author": "Austin Feltan",
     "title": "My Personal Life",
     "url": "123456",
-    "likes": 1
+    "likes": 1,
+    "userId": "639ce8c57498c8695b9c8e45"
 }

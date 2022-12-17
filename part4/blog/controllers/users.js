@@ -3,12 +3,12 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
 usersRouter.get('/', async (request, response, next) => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('blogs')
   response.json(users)
 })
 
 usersRouter.post('/', async (request, response, next) => {
-  const { username, name, password, blogs } = request.body
+  const { username, name, password } = request.body
 
   const userFind = await User.exists({ username: username })
   
@@ -36,9 +36,15 @@ usersRouter.post('/', async (request, response, next) => {
       passwordHash
     })
   
-    const savedUser = await user.save()
-  
-    response.status(201).json(savedUser)
+    try {
+      const savedUser = await user.save()
+      response.status(201).json(savedUser)
+    } catch (error) {
+      console.error(error)
+      response.status(400).json({
+        error
+      })
+    }
   }
 })
 
