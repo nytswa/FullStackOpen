@@ -12,14 +12,14 @@ blogsRouter.get('/', async (request, response) => {
   //   .then(blogs => {
   //     response.json(blogs)
   //   })
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user')
   response.json(blogs)
 })
 
 blogsRouter.get('/:id', async (request, response, next) => {
   const { id } = request.params
   try {
-    const blog = await Blog.findById(id)
+    const blog = await Blog.findById(id).populate('user')
     response.status(200).json(blog)
   } catch (error) {
     console.error(error)
@@ -78,6 +78,7 @@ blogsRouter.post('/', async (request, response) => {
   const blog = new Blog(request.body)
 
   const user = await User.findById(userId)
+  // console.log('__HERE__', user, user._id, user.id)
 
   // No input Control
   if (!blog) {
@@ -88,7 +89,7 @@ blogsRouter.post('/', async (request, response) => {
     response.status(400).json({
       error: 'URL or Title/Author is missing'
     })
-  } else if (!blog.user) {
+  } else if (!userId) {
     response.status(400).json({
       error: 'User/owner missing'
     })
@@ -114,17 +115,17 @@ blogsRouter.post('/', async (request, response) => {
 
       try {
         // save blog + 'updating' user with blog
-        const savedBlog = await blog.save()
+        const savedBlog = await newblog.save()
         user.blogs = user.blogs.concat(savedBlog._id)  // or savedBlog.toJSON().id
         await user.save()
-  
+
         response.status(201).json(savedBlog)
       } catch (error) {
         console.error(error)
         response.status(400).json({ error })
       }
-    } 
-  }   
+    }
+  }
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
