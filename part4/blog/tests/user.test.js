@@ -17,10 +17,8 @@ describe('when there is initially one user in db', () => {
     await user.save()
   })
   test('Successfully created', async () => {
-    // const usersAtStart = await usersInDb()  // helpers
-    // const { body: usersAtStart } = await api.get('/api/users')
+    // const { body: usersAtStart } = await api.get('/api/users')k
     const usersAtStart = await getUsers()
-    // console.log(usersAtStart)
 
     const newUser = {
       username: 'mluukkai',
@@ -36,7 +34,6 @@ describe('when there is initially one user in db', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await getUsers()
-    // console.log(usersAtEnd)
 
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 

@@ -22,7 +22,7 @@ usersRouter.post('/', async (request, response, next) => {
       error: 'No password found'
     })
   } else if (userFind) {
-    console.log('Username', username, 'is already taken', )
+    // console.log('Username', username, 'is already taken', )
       response.status(400).json({
         error: 'Username must be unique'
       })
