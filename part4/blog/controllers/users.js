@@ -21,6 +21,14 @@ usersRouter.post('/', async (request, response, next) => {
     response.status(400).json({
       error: 'No password found'
     })
+  } else if (password.length() < 3) {
+    response.status(400).json({
+      error: 'Password too short'
+    })
+  } else if (username.length() < 3) {
+    response.status(400).json({
+      error: 'Username too short'
+    })
   } else if (userFind) {
     // console.log('Username', username, 'is already taken', )
       response.status(400).json({

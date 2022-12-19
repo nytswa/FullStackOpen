@@ -15,7 +15,7 @@ describe('when there is initially one user in db', () => {
     })
 
     await user.save()
-  })
+  }, 15000)
   test('Successfully created', async () => {
     // const { body: usersAtStart } = await api.get('/api/users')k
     const usersAtStart = await getUsers()
@@ -63,6 +63,52 @@ describe('when there is initially one user in db', () => {
 
     expect(result.body.error).toContain('Username must be unique')
   }, 25000)
+
+  test.only('Failure: username too short', async () => {
+    // const usersAtStart = await getUsers()
+
+    const newUser = {
+      username: 'ro',
+      name: 'ro',
+      password: 'nomatter'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    // const usersAtEnd = await getUsers()
+
+    // expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    // const names = usersAtEnd.map(u => u.name)
+    // expect(names).not.toContain(newUser.name)
+
+    expect(result.body.error).toContain('Username too short')
+  }, 50000)
+
+  test('Failure: password too short', async () => {
+    const usersAtStart = await getUsers()
+
+    const newUser = {
+      username: 'roo',
+      name: 'roo',
+      password: 'no'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const usersAtEnd = await getUsers()
+
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    const names = usersAtEnd.map(u => u.name)
+    expect(names).not.toContain(newUser.name)
+
+    expect(result.body.error).toContain('Password too short')
+  }, 50000)
 
   afterAll(() => {
     mongoose.connection.close()
