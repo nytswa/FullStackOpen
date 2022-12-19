@@ -13,3 +13,8 @@ mongoose.connect(connectionString)
   .catch(error => {
     logger.error('error connecting to Mongo DB:', error.message)
   })
+
+process.on('uncaughtException', error => {
+  console.error(error)
+  mongoose.disconnect()
+})

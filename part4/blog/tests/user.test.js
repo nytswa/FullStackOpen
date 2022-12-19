@@ -77,9 +77,9 @@ describe('when there is initially one user in db', () => {
       .expect(400)
 
     expect(result.body.error).toContain('Username too short')
-  }, 50000)
+  }, 25000)
 
-  test.only('Failure: password too short', async () => {
+  test('Failure: password too short', async () => {
     const usersAtStart = await getUsers()
 
     const newUser = {
@@ -100,7 +100,7 @@ describe('when there is initially one user in db', () => {
     expect(names).not.toContain(newUser.name)
 
     expect(result.body.error).toContain('Password too short')
-  }, 50000)
+  }, 25000)
 
   afterAll(() => {
     mongoose.connection.close()
