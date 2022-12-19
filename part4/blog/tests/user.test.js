@@ -64,9 +64,7 @@ describe('when there is initially one user in db', () => {
     expect(result.body.error).toContain('Username must be unique')
   }, 25000)
 
-  test.only('Failure: username too short', async () => {
-    // const usersAtStart = await getUsers()
-
+  test('Failure: username too short', async () => {
     const newUser = {
       username: 'ro',
       name: 'ro',
@@ -78,16 +76,10 @@ describe('when there is initially one user in db', () => {
       .send(newUser)
       .expect(400)
 
-    // const usersAtEnd = await getUsers()
-
-    // expect(usersAtEnd).toHaveLength(usersAtStart.length)
-    // const names = usersAtEnd.map(u => u.name)
-    // expect(names).not.toContain(newUser.name)
-
     expect(result.body.error).toContain('Username too short')
   }, 50000)
 
-  test('Failure: password too short', async () => {
+  test.only('Failure: password too short', async () => {
     const usersAtStart = await getUsers()
 
     const newUser = {
