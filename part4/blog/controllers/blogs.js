@@ -7,12 +7,11 @@ console.log('Logging inside Controllers')
 
 
 blogsRouter.get('/', async (request, response) => {
-  // Blog
-  //   .find({})
-  //   .then(blogs => {
-  //     response.json(blogs)
-  //   })
-  const blogs = await Blog.find({}).populate('user')
+  const blogs = await Blog.find({}).populate('user', {
+    username: 1,
+    name: 1,
+    blogs: 1
+  })
   response.json(blogs)
 })
 
