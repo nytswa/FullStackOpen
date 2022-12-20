@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/Blog')
 const User = require('../models/User')
+const jwt = require('jsonwebtoken')
 
 
 console.log('Logging inside Controllers')
@@ -78,6 +79,23 @@ blogsRouter.post('/', async (request, response) => {
 
   const user = await User.findById(userId)
   // console.log('__HERE__', user, user._id, user.id)
+
+  // TOKEN Authentication
+  const authorization = request.get('authorization')
+  let token = null
+
+  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+    token = authorization.substring(7)
+  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({
+      error: 'token missing or invalid'
+    })
+  }
+
 
   // No input Control
   if (!blog) {
