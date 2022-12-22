@@ -85,18 +85,12 @@ blogsRouter.post('/', async (request, response) => {
   const blog = new Blog(request.body)
 
   const user = await User.findById(userId)
-  // console.log('__HERE__', user, user._id, user.id)
+
 
   // TOKEN Authentication
   // const token = getTokenFrom(request)
-  let decodedToken = {}
-  
-  try {
-    decodedToken = jwt.verify(request.token, process.env.SECRET)
-    // console.log(token, decodedToken)
-  } catch {}
 
-  if (!request.token || !decodedToken.id) {
+  if (!request.token || !request.user.id) {
     return response.status(401).json({
       error: 'token missing or invalid'
     })
@@ -153,9 +147,36 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   const { id } = request.params
+
+  // TOKEN Authentication
+  // const token = getTokenFrom(request)
+  
+
+  if (!request.token || !request.user.id) {
+    return response.status(401).json({
+      error: 'token missing or invalid'
+    })
+  }
+
+  // Verify same user creator as the One logged in
   try {
-    const blog = await Blog.findByIdAndDelete(id)
-    response.status(204).json(blog)
+    const blog = await Blog.findById(id).populate('user')
+    const creator = blog.user.id.toString()
+    console.log(creator)
+    if (creator !== request.user.id) {
+      return response.status(401).json({
+        error: "Wrong user. You don't have access to deleting this blog"
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    // next(error)
+  }
+
+
+  try {
+    const blogDeleted = await Blog.findByIdAndDelete(id)
+    response.status(204).json(blogDeleted)
   }
   catch (error) {
     console.error(error)

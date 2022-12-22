@@ -7,6 +7,5 @@ module.exports = (request, response, next) => {
     token = authorization.substring(7)
   }
   request.token = token
-  console.log(request.token)
   next()
 }
