@@ -149,7 +149,16 @@ describe('by ID', () => {
     const blog = response.body[0]
     await api
       .delete(`/api/blogs/${blog.id}`)
+      // .set("Autorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs")
       .expect(204)
+  }, 22000)
+
+  test('deleting fail with no token: Unauthorized', async () => {
+    const response = await api.get('/api/blogs')
+    const blog = response.body[0]
+    await api
+      .delete(`/api/blogs/${blog.id}`)
+      .expect(401)
   }, 22000)
   
   test('getting 1 that exists always', async () => {

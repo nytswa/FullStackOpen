@@ -22,8 +22,8 @@ blogsRouter.get('/:id', async (request, response, next) => {
     const blog = await Blog.findById(id).populate('user')
     response.status(200).json(blog)
   } catch (error) {
-    console.error(error)
-    // next(error)
+    // console.error(error)
+    next(error)
   }
 })
 
@@ -80,12 +80,15 @@ blogsRouter.get('/:id', async (request, response, next) => {
 // }
 
 // await POST
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', async (request, response, next) => {
   const { userId } = request.body
   const blog = new Blog(request.body)
 
-  const user = await User.findById(userId)
-
+  const user = await User.findOne({userId})
+  // try {
+  //   const user = await User.findById(userId)
+  // } catch (e) {}
+  //   console.error(e)
 
   // TOKEN Authentication
   // const token = getTokenFrom(request)
@@ -95,6 +98,20 @@ blogsRouter.post('/', async (request, response) => {
       error: 'token missing or invalid'
     })
   }
+
+  // Verify same user creator as the One logged in
+  try {    
+    const creator = blog.user.id.toString()
+    if (creator !== request.user.id) {
+      return response.status(401).json({
+        error: "Wrong user. You don't have access to deleting this blog"
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    // next(error)
+  }
+
 
 
   // No input Control
@@ -108,7 +125,7 @@ blogsRouter.post('/', async (request, response) => {
     })
   } else if (!userId) {
     response.status(400).json({
-      error: 'User/owner missing'
+      error: 'User/owner id missing'
     })
   } else {
     const blogFind = await Blog.exists({ title: blog.title })
@@ -138,8 +155,9 @@ blogsRouter.post('/', async (request, response) => {
 
         response.status(201).json(savedBlog)
       } catch (error) {
-        console.error(error)
-        response.status(400).json({ error })
+        // console.error(error)
+        // response.status(400).json({ error })
+        next(error)
       }
     }
   }
@@ -162,15 +180,14 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   try {
     const blog = await Blog.findById(id).populate('user')
     const creator = blog.user.id.toString()
-    console.log(creator)
     if (creator !== request.user.id) {
       return response.status(401).json({
         error: "Wrong user. You don't have access to deleting this blog"
       })
     }
   } catch (error) {
-    console.error(error)
-    // next(error)
+    // console.error(error)
+    next(error)
   }
 
 
@@ -179,8 +196,8 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     response.status(204).json(blogDeleted)
   }
   catch (error) {
-    console.error(error)
-    // next(error)
+    // console.error(error)
+    next(error)
   }
 })
 
@@ -199,9 +216,9 @@ blogsRouter.put('/:id', async (request, response, next) => {
     const update = await Blog.findByIdAndUpdate(id, blog, {new:true})
     response.status(200).json(blog)
   } catch (error) {
-    response.status(404)
-    console.error(error)
-    // next(error)
+    // response.status(404)
+    // console.error(error)
+    next(error)
   }
 })
 
