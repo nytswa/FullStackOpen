@@ -4,7 +4,7 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 
 
-console.log('Logging inside Controllers')
+// console.log('Logging inside Controllers')
 
 
 blogsRouter.get('/', async (request, response) => {
@@ -71,6 +71,13 @@ blogsRouter.get('/:id', async (request, response, next) => {
 //   }
 // })
 
+// const getTokenFrom = request => {
+//   const authorization = request.get('authorization')
+//   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+//     return authorization.substring(7)
+//   }
+//   return null
+// }
 
 // await POST
 blogsRouter.post('/', async (request, response) => {
@@ -81,25 +88,19 @@ blogsRouter.post('/', async (request, response) => {
   // console.log('__HERE__', user, user._id, user.id)
 
   // TOKEN Authentication
-  const authorization = request.get('authorization')
-  let token = ''  // or null
-
-  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    token = authorization.substring(7)
-  }
-
+  // const token = getTokenFrom(request)
   let decodedToken = {}
+  
   try {
-    decodedToken = jwt.verify(token, process.env.SECRET)
+    decodedToken = jwt.verify(request.token, process.env.SECRET)
     // console.log(token, decodedToken)
   } catch {}
 
-  if (!token || !decodedToken.id) {
+  if (!request.token || !decodedToken.id) {
     return response.status(401).json({
       error: 'token missing or invalid'
     })
   }
-
 
 
   // No input Control
