@@ -7,6 +7,8 @@ const ERROR_HANDLERS = {
 
   JsonWebTokenError: res => res.status(401).json({ error: 'invalid token' }),
 
+  TokenExpirerError: res => res.status(401).json({ error: 'token expired' }),
+
   defaultError: res => res.status(500).end()
 }
 
@@ -18,22 +20,9 @@ module.exports = (error, request, response) => {
   console.error(error)
   console.log(error.name, error.message)
 
-  // Bad Request
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: 'id used is malformed' })
-  } else if (error.name === "ValidationError") {
-    return response.status(400).json({ error: error.message })
-  } else if (error.name === "JsonWebTokenError") {
-    return response.status(401).json({
-      error: 'invalid token'
-    })
-  } else if (error.name === 'TokenExpiredError') {
-    return response.status(401).json({
-      error: 'token expired'
-    })
-  } else {  // (error.name === "Error")
-    response.status(500).send({ error: 'Internal Server Error' })
-  }
+  const handler = ERROR_HANDLERS[error.name] || ERROR_HANDLERS.defaultError
+
+  handler(response, error)
 
   next()
 }
