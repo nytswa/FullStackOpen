@@ -82,19 +82,24 @@ blogsRouter.post('/', async (request, response) => {
 
   // TOKEN Authentication
   const authorization = request.get('authorization')
-  let token = null
+  let token = ''  // or null
 
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
     token = authorization.substring(7)
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  let decodedToken = {}
+  try {
+    decodedToken = jwt.verify(token, process.env.SECRET)
+    // console.log(token, decodedToken)
+  } catch {}
 
   if (!token || !decodedToken.id) {
     return response.status(401).json({
       error: 'token missing or invalid'
     })
   }
+
 
 
   // No input Control
