@@ -14,7 +14,7 @@ loginRouter.post('/', async (request, response) => {
     : await bcrypt.compare(password, user.passwordHash)
   
   if (!passwordCorrect) {
-    response.status(401).json({
+    return response.status(401).json({
       error: 'invalid user or password'
     })
   }
@@ -32,7 +32,7 @@ loginRouter.post('/', async (request, response) => {
       }
     )
 
-    response
+    return response
       .status(200)
       .send({
         token,

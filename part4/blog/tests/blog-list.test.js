@@ -1,11 +1,18 @@
 const mongoose = require('mongoose')
 const server = require('../index').server
 const Blog = require('../models/Blog')
-const { api, initialBlogs, getAllBlogs } = require('./helpers')
+const User = require('../models/User')
+const { api, initialBlogs, getAllBlogs, getUsers } = require('./helpers')
 
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+
+  const usersAtStart = await getUsers()
+  const root = usersAtStart[0]
+
+  initialBlogs[0].userId = root.id
+  initialBlogs[1].userId = root.id
 
   const blog1 = new Blog(initialBlogs[0])
   await blog1.save()
@@ -49,15 +56,19 @@ describe('Initial saved data/blogs', () => {
 
 describe('POST Created', () => {
   test('a valid blog can be added', async () => {
+    const rootZero = await User.findOne({})
+
     const newVBlog = {
       "author": "None",
       "title": "Nothing",
       "url": "333",
-      "likes": 3
+      "likes": 3,
+      "userId": rootZero.id
     }
   
     await api.post('/api/blogs')
       .send(newVBlog)
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs')
       .expect(201)  // Created
       .expect('Content-Type', /application\/json/)
   
@@ -70,14 +81,18 @@ describe('POST Created', () => {
   }, 22000)
   
   test('likes missing from request will still be 0', async () => {
+    const rootZero = await User.findOne({})
+
     const newInBlog = {
       "author": "None",
       "title": "Nothing",
-      "url": "333"
+      "url": "333",
+      "userId": rootZero.id
     }
   
     const createdBlog = await api.post('/api/blogs')
       .send(newInBlog)
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs')
       .expect(201)  // Created
   
     expect(createdBlog.body.url).toBe('333')
@@ -95,6 +110,7 @@ describe('invalid blogs', () => {
   
     await api.post('/api/blogs')
       .send(newInBlog)
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs')
       .expect(400)  // Created
   
     const { authors, titles } = await getAllBlogs()
@@ -111,6 +127,7 @@ describe('invalid blogs', () => {
   
     await api.post('/api/blogs')
       .send(newInBlog)
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs')
       .expect(400)  // Created
   
     const response = await api.get('/api/blogs')
@@ -130,6 +147,7 @@ describe('invalid blogs', () => {
   
     const responsePost = await api.post('/api/blogs')
       .send(newInBlog)
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs')
       .expect(400)  // Created
     
     expect(responsePost.body).toEqual({ error: 'URL or Title/Author is missing' })
@@ -147,9 +165,12 @@ describe('by ID', () => {
   test('deleting an existing blog', async () => {
     const response = await api.get('/api/blogs')
     const blog = response.body[0]
+    // const token = response.body.token
+
     await api
       .delete(`/api/blogs/${blog.id}`)
-      // .set("Autorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs")
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs')
+      // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik55dHN3YSIsImlkIjoiNjM5Y2U4YzU3NDk4Yzg2OTViOWM4ZTQ1IiwiaWF0IjoxNjcxNTUxNzczfQ.dEbmkQzcum4B0OrkbSBN9S16l2BLMYOKajio3cjHHVs
       .expect(204)
   }, 22000)
 

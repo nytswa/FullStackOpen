@@ -15,6 +15,16 @@ describe('when there is initially one user in db', () => {
     })
 
     await user.save()
+
+    const login = await api
+      .post('/api/login')
+      .send({
+        "username": "root",
+        passwordHash
+      })
+    
+    console.log(login)
+  
   }, 15000)
   test('Successfully created', async () => {
     // const { body: usersAtStart } = await api.get('/api/users')k

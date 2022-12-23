@@ -16,8 +16,7 @@ module.exports = (error, request, response) => {
   // console path
 
   console.log('---TESTING: error middleware')
-  console.log(request.path)
-  console.error(error)
+  // console.log(request.path)  // undefined
   console.log(error.name, error.message)
 
   const handler = ERROR_HANDLERS[error.name] || ERROR_HANDLERS.defaultError

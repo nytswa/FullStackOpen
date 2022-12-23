@@ -83,7 +83,7 @@ blogsRouter.get('/:id', async (request, response, next) => {
 blogsRouter.post('/', async (request, response, next) => {
   const { userId } = request.body
   const blog = new Blog(request.body)
-
+  
   const user = await User.findOne({userId})
   // try {
   //   const user = await User.findById(userId)
@@ -101,7 +101,7 @@ blogsRouter.post('/', async (request, response, next) => {
 
   // Verify same user creator as the One logged in
   try {    
-    const creator = blog.user.id.toString()
+    const creator = userId
     if (creator !== request.user.id) {
       return response.status(401).json({
         error: "Wrong user. You don't have access to deleting this blog"
@@ -165,30 +165,30 @@ blogsRouter.post('/', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   const { id } = request.params
-
+  
+  const blog  = await Blog.findById(id).populate('user')
+  if (blog === null) {
+    return response.status(404).json({
+      error: "Not found: blog id invalid"
+    })
+  }
   // TOKEN Authentication
   // const token = getTokenFrom(request)
-  
 
   if (!request.token || !request.user.id) {
     return response.status(401).json({
       error: 'token missing or invalid'
     })
   }
-
+  
+  
   // Verify same user creator as the One logged in
-  try {
-    const blog = await Blog.findById(id).populate('user')
-    const creator = blog.user.id.toString()
+  const creator = blog.user.id.toString()
     if (creator !== request.user.id) {
       return response.status(401).json({
         error: "Wrong user. You don't have access to deleting this blog"
       })
     }
-  } catch (error) {
-    // console.error(error)
-    next(error)
-  }
 
 
   try {
